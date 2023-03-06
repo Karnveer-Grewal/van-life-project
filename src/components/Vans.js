@@ -9,13 +9,11 @@ const VansList = () => {
     async function getData() {
       const response = await fetch('/api/vans');
       const data = await response.json();
-      console.log(data);
+
       setVans(data.vans);
     }
     getData();
   }, []);
-
-  console.log(vans);
 
   const vanElements = vans.map((van) => (
     <div key={van.id}>
