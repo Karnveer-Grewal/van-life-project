@@ -6,13 +6,25 @@ const VansList = () => {
   const [vans, setVans] = useState([]);
 
   useEffect(() => {
-    async function getData() {
-      const response = await fetch('/api/vans');
-      const data = await response.json();
+    const abortController = new AbortController();
 
-      setVans(data.vans);
+    try {
+      async function getData() {
+        const response = await fetch('/api/vans', {
+          signal: abortController.signal,
+        });
+        const data = await response.json();
+
+        setVans(data.vans);
+      }
+      getData();
+    } catch (error) {
+      console.log(error);
     }
-    getData();
+
+    return () => {
+      abortController.abort();
+    };
   }, []);
 
   const vanElements = vans.map((van) => (

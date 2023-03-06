@@ -7,13 +7,24 @@ const VanDetail = () => {
   const { id } = useParams();
 
   useEffect(() => {
-    async function getVan() {
-      const response = await fetch(`/api/vans/${id}`);
-      const data = await response.json();
-      setVan(data.vans);
-    }
+    const abortController = new AbortController();
 
-    getVan();
+    try {
+      async function getVan() {
+        const response = await fetch(`/api/vans/${id}`, {
+          signal: abortController.signal,
+        });
+        const data = await response.json();
+        setVan(data.vans);
+      }
+
+      getVan();
+    } catch (error) {
+      console.log(error);
+    }
+    return () => {
+      abortController.abort();
+    };
   }, []);
 
   console.log(van);
